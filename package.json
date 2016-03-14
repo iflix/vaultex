@@ -1,6 +1,6 @@
 {
   "name": "vaultex",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Vaultex is a node module for interacting with Hashicorp Vault",
   "main": "lib/vaultex.js",
   "scripts": {

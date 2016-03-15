@@ -27,6 +27,9 @@ export default function () {
       if (!response || !response.data) return callback(null, {})
       const keys = Object.keys(response.data)
       if (keys.length === 1 && keys[0] === '$vaultex') response.data = response.data.$vaultex
+      try {
+        response.data = JSON.parse(response.data)
+      } catch (e) {}
       return callback(null, response.data)
     }, mountPoint)
   }

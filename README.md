@@ -3,6 +3,7 @@
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![npm-downloads-month](https://img.shields.io/npm/dm/vaultex.svg)](https://www.npmjs.com/package/vaultex)
 [![npm-version](https://img.shields.io/npm/v/vaultex.svg)](https://www.npmjs.com/package/vaultex)
+[![Build Status](https://travis-ci.org/iflix-letsplay/vaultex.svg?branch=master)](https://travis-ci.org/iflix-letsplay/vaultex)
 
 Vaultex is a node module for interacting with HashiCorp Vault.
 

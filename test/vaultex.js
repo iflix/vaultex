@@ -1,4 +1,4 @@
-/*global describe, before, it*/
+/*global describe, before, after, it*/
 import assert from 'assert'
 
 import spawnDevVault from 'spawn-dev-vault'
@@ -21,17 +21,22 @@ function spawnVault (dev, callback) {
   }, function (err, data) {
     assert.ifError(err)
     let { host, port } = hostStrToObj(data)
-    return callback(data, new Vaultex({
+    let vaultex = new Vaultex({
       host,
       port,
       secure: false,
       token: data.token
-    }))
+    })
+    vaultex.kill = function (cb) {
+      data.process.on('exit', function () {
+        cb()
+      })
+      data.process.kill('SIGKILL')
+    }
+    setTimeout(function () {
+      return callback(vaultex, data)
+    }, 200)
   })
-}
-
-function killVault (vaultConfig) {
-  vaultConfig.process.kill()
 }
 
 describe('Vaultex', function () {
@@ -55,22 +60,81 @@ describe('Vaultex', function () {
   describe('init', function () {
     describe('initialized', function () {
       it('should return true for initd vault', function (done) {
-        spawnVault(true, function (vaultConfig, vaultex) {
+        spawnVault(true, function (vaultex) {
           vaultex.init.initialized(function (err, data) {
             assert.ifError(err)
             assert.equal(data.initialized, true)
-            killVault(vaultConfig)
-            return done()
+            vaultex.kill(done)
           })
         })
       })
       it('should return false for not initd vault', function (done) {
-        spawnVault(false, function (vaultConfig, vaultex) {
+        spawnVault(false, function (vaultex) {
           vaultex.init.initialized(function (err, data) {
             assert.ifError(err)
             assert.equal(data.initialized, false)
-            killVault(vaultConfig)
-            return done()
+            vaultex.kill(done)
+          })
+        })
+      })
+    })
+    describe('initialize', function () {
+      it('should require opts', function (done) {
+        spawnVault(false, function (vaultex) {
+          vaultex.init.initialize({}, function (err) {
+            assert.equal(err.error, 'secret_shares is required')
+            vaultex.init.initialize({
+              secret_shares: 1
+            }, function (err) {
+              assert.equal(err.error, 'secret_threshold is required')
+              vaultex.kill(done)
+            })
+          })
+        })
+      })
+      it('should initialize vault', function (done) {
+        spawnVault(false, function (vaultex, vaultConfig) {
+          vaultex.init.initialize({
+            secret_shares: 5,
+            secret_threshold: 5
+          }, function (err, data) {
+            assert.ifError(err)
+            vaultex.kill(done)
+          })
+        })
+      })
+    })
+    describe('secret backends', function () {
+      describe('generic', function () {
+        let sharedVaultex = null
+        before(function (done) {
+          spawnVault(true, function (vaultex) {
+            sharedVaultex = vaultex
+            done()
+          })
+        })
+        after(function (done) {
+          sharedVaultex.kill(done)
+        })
+        describe('writeRaw', function () {
+          it('should write raw value', function (done) {
+            sharedVaultex.secret.generic.writeRaw('key', {
+              value: 'hello'
+            }, function (err) {
+              assert.ifError(err)
+              done()
+            })
+          })
+        })
+        describe('readRaw', function () {
+          it('should read raw value', function (done) {
+            sharedVaultex.secret.generic.readRaw('key', function (err, response) {
+              assert.ifError(err)
+              assert.deepEqual(response.data, {
+                value: 'hello'
+              })
+              done()
+            })
           })
         })
       })

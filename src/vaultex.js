@@ -78,7 +78,11 @@ class Vaultex {
     const url = `http${this.secure ? 's' : ''}://${this.host}:${this.port}/${this.version}/${endpoint}`
 
     const headers = {
-      'X-Vault-Token': this.token
+      'Content-Type': 'application/json'
+    }
+
+    if (this.token) {
+      headers['X-Vault-Token'] = this.token
     }
 
     let req = {
@@ -103,6 +107,9 @@ class Vaultex {
         if (body.auth && body.auth.client_token) {
           this.token = body.auth.client_token
         }
+      }
+      if (body.errors && Array.isArray(body.errors) && body.errors.length) {
+        return callback(body.errors)
       }
       return callback(null, body)
     })

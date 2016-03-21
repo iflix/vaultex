@@ -38,3 +38,6 @@ node_modules
 lib
 >>>>>>> vaultex-private/release
 vault
+config.hcl
+.jshintignore
+.jshintrc

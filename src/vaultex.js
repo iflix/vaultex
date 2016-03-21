@@ -20,6 +20,10 @@ import secretGeneric from './secretGeneric'
 import secretAWS from './secretAWS'
 import secretSSH from './secretSSH'
 
+const unauthEndpoints = [
+  /sys\/init/
+]
+
 class Vaultex {
 
   constructor (opts = {}) {
@@ -63,8 +67,9 @@ class Vaultex {
 
   req (method, endpoint, body, callback) {
     const isAuthReq = /^auth\//.test(endpoint)
+    const isUnauthed = unauthEndpoints.some((e) => e.test(endpoint))
 
-    if (!this.token && !isAuthReq) {
+    if (!this.token && !isAuthReq && !isUnauthed) {
       return callback({
         error: 'no token'
       })

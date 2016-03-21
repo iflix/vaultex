@@ -4,7 +4,8 @@
   "description": "Vaultex is a node module for interacting with Hashicorp Vault",
   "main": "lib/vaultex.js",
   "scripts": {
-    "test": "standard --verbose | snazzy && mocha -r babel-register --bail",
+    "pretest": "standard --verbose | snazzy",
+    "test": "mocha -r babel-register --bail",
     "build": "babel src -d lib",
     "prepublish": "npm run build"
   },
@@ -31,7 +32,7 @@
     "mocha": "^2.4.5",
     "precommit-hook": "^3.0.0",
     "snazzy": "^3.0.0",
-    "spawn-dev-vault": "^1.0.0",
+    "spawn-dev-vault": "^2.0.0",
     "standard": "^6.0.8"
   },
   "dependencies": {

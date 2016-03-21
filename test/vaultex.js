@@ -5,13 +5,33 @@ import spawnDevVault from 'spawn-dev-vault'
 
 import Vaultex from '../src/vaultex'
 
-let vaultConfig
-
-function hostStrToObj () {
+function hostStrToObj (vaultConfig) {
+  let {
+    address = '//127.0.0.1:8500'
+  } = vaultConfig
   return {
-    host: vaultConfig.address.match(/\/\/(.+):/)[1],
-    port: vaultConfig.address.match(/:(\d+)$/)[1]
+    host: address.match(/\/\/(.+):/)[1],
+    port: address.match(/:(\d+)$/)[1]
   }
+}
+
+function spawnVault (dev, callback) {
+  spawnDevVault({
+    dev
+  }, function (err, data) {
+    assert.ifError(err)
+    let { host, port } = hostStrToObj(data)
+    return callback(data, new Vaultex({
+      host,
+      port,
+      secure: false,
+      token: data.token
+    }))
+  })
+}
+
+function killVault (vaultConfig) {
+  vaultConfig.process.kill()
 }
 
 describe('Vaultex', function () {
@@ -19,13 +39,7 @@ describe('Vaultex', function () {
     this.timeout(100000)
     spawnDevVault.download(process.cwd(), function (err) {
       assert.ifError(err)
-      spawnDevVault(null, function (err, data) {
-        if (err) {
-          assert.ifError(err)
-        }
-        vaultConfig = data
-        done()
-      })
+      done()
     })
   })
   it('should export fn', function () {
@@ -40,18 +54,24 @@ describe('Vaultex', function () {
   })
   describe('init', function () {
     describe('initialized', function () {
-      it('should return x for existing vault', function (done) {
-        let { host, port } = hostStrToObj()
-        let vaultex = new Vaultex({
-          host,
-          port,
-          secure: false,
-          token: vaultConfig.token
+      it('should return true for initd vault', function (done) {
+        spawnVault(true, function (vaultConfig, vaultex) {
+          vaultex.init.initialized(function (err, data) {
+            assert.ifError(err)
+            assert.equal(data.initialized, true)
+            killVault(vaultConfig)
+            return done()
+          })
         })
-        vaultex.init.initialized(function (err, data) {
-          assert.ifError(err)
-          assert.equal(data.initialized, true)
-          return done()
+      })
+      it('should return false for not initd vault', function (done) {
+        spawnVault(false, function (vaultConfig, vaultex) {
+          vaultex.init.initialized(function (err, data) {
+            assert.ifError(err)
+            assert.equal(data.initialized, false)
+            killVault(vaultConfig)
+            return done()
+          })
         })
       })
     })

@@ -9,6 +9,7 @@ function hostStrToObj (vaultConfig) {
   let {
     address = '//127.0.0.1:8500'
   } = vaultConfig
+
   return {
     host: address.match(/\/\/(.+):/)[1],
     port: address.match(/:(\d+)$/)[1]
@@ -20,6 +21,7 @@ function spawnVault (dev, callback) {
     dev
   }, function (err, data) {
     assert.ifError(err)
+
     let { host, port } = hostStrToObj(data)
     let vaultex = new Vaultex({
       host,
@@ -27,12 +29,14 @@ function spawnVault (dev, callback) {
       secure: false,
       token: data.token
     })
+
     vaultex.kill = function (cb) {
       data.process.on('exit', function () {
         cb()
       })
       data.process.kill('SIGKILL')
     }
+
     setTimeout(function () {
       return callback(vaultex, data)
     }, 200)
@@ -42,21 +46,26 @@ function spawnVault (dev, callback) {
 describe('Vaultex', function () {
   before(function (done) {
     this.timeout(100000)
+
     spawnDevVault.download(process.cwd(), function (err) {
       assert.ifError(err)
       done()
     })
   })
+
   it('should export fn', function () {
     assert.equal(typeof Vaultex, 'function')
   })
+
   it('should set defaults for opts', function () {
     let vaultex = new Vaultex()
+
     assert.equal(vaultex.host, '127.0.0.1')
     assert.equal(vaultex.port, 8500)
     assert.equal(vaultex.version, 'v1')
     assert.equal(vaultex.secure, true)
   })
+
   describe('init', function () {
     describe('initialized', function () {
       it('should return true for initd vault', function (done) {
@@ -64,25 +73,30 @@ describe('Vaultex', function () {
           vaultex.init.initialized(function (err, data) {
             assert.ifError(err)
             assert.equal(data.initialized, true)
+
             vaultex.kill(done)
           })
         })
       })
+
       it('should return false for not initd vault', function (done) {
         spawnVault(false, function (vaultex) {
           vaultex.init.initialized(function (err, data) {
             assert.ifError(err)
             assert.equal(data.initialized, false)
+
             vaultex.kill(done)
           })
         })
       })
     })
+
     describe('initialize', function () {
       it('should require opts', function (done) {
         spawnVault(false, function (vaultex) {
           vaultex.init.initialize({}, function (err) {
             assert.equal(err.error, 'secret_shares is required')
+
             vaultex.init.initialize({
               secret_shares: 1
             }, function (err) {
@@ -92,6 +106,7 @@ describe('Vaultex', function () {
           })
         })
       })
+
       it('should initialize vault', function (done) {
         spawnVault(false, function (vaultex, vaultConfig) {
           vaultex.init.initialize({
@@ -104,18 +119,22 @@ describe('Vaultex', function () {
         })
       })
     })
+
     describe('secret backends', function () {
       describe('generic', function () {
         let sharedVaultex = null
+
         before(function (done) {
           spawnVault(true, function (vaultex) {
             sharedVaultex = vaultex
             done()
           })
         })
+
         after(function (done) {
           sharedVaultex.kill(done)
         })
+
         describe('writeRaw', function () {
           it('should write raw value', function (done) {
             sharedVaultex.secret.generic.writeRaw('key', {
@@ -126,6 +145,7 @@ describe('Vaultex', function () {
             })
           })
         })
+
         describe('readRaw', function () {
           it('should read raw value', function (done) {
             sharedVaultex.secret.generic.readRaw('key', function (err, response) {

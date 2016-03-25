@@ -24,7 +24,7 @@ export default function () {
     this.secret.generic.readRaw(key, function (err, response) {
       if (err) return callback(err)
       if (response.error) return callback(response.error)
-      if (!response || !response.data) return callback(null, {})
+      if (!response || !response.data) return callback(null, null)
       const keys = Object.keys(response.data)
       if (keys.length === 1 && keys[0] === '$vaultex') response.data = response.data.$vaultex
       try {

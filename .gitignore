@@ -23,7 +23,6 @@ coverage
 build/Release
 
 # Dependency directory
-<<<<<<< HEAD
 node_modules
 
 # Optional npm cache directory
@@ -31,12 +30,8 @@ node_modules
 
 # Optional REPL history
 .node_repl_history
-=======
-# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
-node_modules
 
 lib
->>>>>>> vaultex-private/release
 vault
 config.hcl
 .jshintignore

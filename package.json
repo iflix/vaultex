@@ -5,7 +5,7 @@
   "main": "lib/vaultex.js",
   "scripts": {
     "pretest": "standard --verbose | snazzy",
-    "test": "mocha -r babel-register --bail",
+    "test": "mocha -r babel-register --bail --recursive",
     "build": "babel src -d lib",
     "prepublish": "npm run build"
   },

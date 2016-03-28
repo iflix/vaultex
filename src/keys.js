@@ -30,10 +30,20 @@ export default function () {
     this.req('DELETE', 'sys/rekey/init', null, callback)
   }
 
-  this.rekey.update = (key, callback) => {
-    this.req('PUT', 'sys/rekey/update', {
-      key
-    }, callback)
+  this.rekey.update = (opts, callback) => {
+    if (!opts.key) {
+      return callback({
+        error: 'key is required'
+      })
+    }
+
+    if (!opts.nonce) {
+      return callback({
+        error: 'nonce is required'
+      })
+    }
+
+    this.req('PUT', 'sys/rekey/update', opts, callback)
   }
 
   this.rekey.rotate = (callback) => {

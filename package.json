@@ -1,12 +1,15 @@
 {
   "name": "vaultex",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Vaultex is a node module for interacting with Hashicorp Vault",
   "main": "lib/vaultex.js",
   "scripts": {
-    "test": "standard --verbose | snazzy",
+    "test": "echo 'fix me'",
     "build": "babel src -d lib",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "pretest": "npm run lint",
+    "lint": "standard --verbose | snazzy",
+    "validate": "npm ls"
   },
   "repository": {
     "type": "git",

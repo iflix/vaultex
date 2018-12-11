@@ -8,8 +8,8 @@ Vaultex is a node module for interacting with HashiCorp Vault.
 
 ## Documentation
 
-See the [Vaultex Wiki](https://github.com/iflix-letsplay/vaultex/wiki)
+See the [Vaultex Wiki](https://github.com/iflix/vaultex/wiki)
 
 ## LICENSE
 
-See [LICENSE.md](https://github.com/iflix-letsplay/vaultex/blob/master/LICENSE.md)
+See [LICENSE.md](https://github.com/iflix/vaultex/blob/master/LICENSE.md)

@@ -1,5 +1,5 @@
 {
-  "name": "vaultex",
+  "name": "@iflix/vaultex",
   "version": "0.0.4",
   "description": "Vaultex is a node module for interacting with Hashicorp Vault",
   "main": "lib/vaultex.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iflix-letsplay/vaultex.git"
+    "url": "git+https://github.com/iflix/vaultex.git"
   },
   "keywords": [
     "vault",
@@ -24,9 +24,9 @@
   "author": "Adam Brady <adam@boxxen.org>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/iflix-letsplay/vaultex/issues"
+    "url": "https://github.com/iflix/vaultex/issues"
   },
-  "homepage": "https://github.com/iflix-letsplay/vaultex#readme",
+  "homepage": "https://github.com/iflix/vaultex#readme",
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-plugin-add-module-exports": "^0.1.2",
